@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20210913162235_mig2.cs" />
+    <Compile Remove="Migrations\20210913162235_mig2.Designer.cs" />
+    <Compile Remove="Migrations\20210915120243_mig2.cs" />
+    <Compile Remove="Migrations\20210915120243_mig2.Designer.cs" />
+    <Compile Remove="Migrations\20210922130744_TablasSolicitudCabeceraDetalle.cs" />
+    <Compile Remove="Migrations\20210922130744_TablasSolicitudCabeceraDetalle.Designer.cs" />
+    <Compile Remove="Migrations\20210922132323_TablasSolicitudCabeceraDetalleFixIDDetail.cs" />
+    <Compile Remove="Migrations\20210922132323_TablasSolicitudCabeceraDetalleFixIDDetail.Designer.cs" />
+    <Compile Remove="Migrations\20210922133745_ActualizarLoanApplicationCabeceraDetalle2.cs" />
+    <Compile Remove="Migrations\20210922133745_ActualizarLoanApplicationCabeceraDetalle2.Designer.cs" />
+    <Compile Remove="Migrations\20210922153324_AddLoanApplicationMainDetails.cs" />
+    <Compile Remove="Migrations\20210922153324_AddLoanApplicationMainDetails.Designer.cs" />
+    <Compile Remove="Migrations\20210922153624_AddLoanApplicationMainDetails.cs" />
+    <Compile Remove="Migrations\20210922153624_AddLoanApplicationMainDetails.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.18" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinancieraAcme.PrestaFacil.Domain\FinancieraAcme.PrestaFacil.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
