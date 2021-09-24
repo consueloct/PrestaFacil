@@ -6,6 +6,6 @@ namespace FinancieraAcme.PrestaFacil.Domain
 {
     public interface IUnitOfWork
     {
-
+        Task GuardarAsync();
     }
 }
