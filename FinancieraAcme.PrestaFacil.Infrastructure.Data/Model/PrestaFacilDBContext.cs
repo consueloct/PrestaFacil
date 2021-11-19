@@ -15,8 +15,8 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Model
 
         public DbSet<LoanApplication> LoanApplications { get; set; }//this is the name that will go on the database
         public DbSet<Client> Clients { get; set; }
-        public DbSet<LoanApplicationMain> LoanApplicationMains { get; set; }
-        public DbSet<LoanApplicationMainDetail> LoanApplicationMainDetails { get; set; }
+        public DbSet<LoanApplicationParent> LoanApplicationParents { get; set; }
+        public DbSet<LoanApplicationChild> LoanApplicationChilds { get; set; }
         
         //can initialice tables in the DB for instance names, data types,etc
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,23 +28,23 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Model
                 .HasColumnType("decimal(7,2)");
 
             //Foreing Key definition
-            modelBuilder.Entity<LoanApplicationMainDetail>()
-                .HasKey(sd => new { sd.LoanApplicationMainId, sd.Item });
+            modelBuilder.Entity<LoanApplicationChild>()
+                .HasKey(sd => new { sd.LoanApplicationParentId, sd.Item });
 
-            modelBuilder.Entity<LoanApplicationMain>()
+            modelBuilder.Entity<LoanApplicationParent>()
                 .HasOne(sc => sc.Client)
                 .WithMany(c => c.LoanApplicationMains)
                 .HasForeignKey(fk => fk.ClientId);
 
 
-            modelBuilder.Entity<LoanApplicationMainDetail>()
-                .HasOne(sc => sc.LoanApplicationMain)
-                .WithMany(c => c.LoanApplicationMainDetails);
+            modelBuilder.Entity<LoanApplicationChild>()
+                .HasOne(sc => sc.LoanApplicationParent)
+                .WithMany(c => c.LoanApplicationChilds);
         }
         //Add-Migration ActualizarLoanApplication -Context PrestaFacilDbContext
         //Update-Database -Context PrestaFacilDbContext
         //Apply specific migration
-        //Update-Database -Context PrestaFacilDBContext -Migration ActualizarLoanApplication
+        //Update-Database -Context PrestaFacilDBContext -Migration ActualizarLoanApplication //To Apply a Migration previous version
         //Remove-Migration -Context PrestaFacilDBContext
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.l
     }

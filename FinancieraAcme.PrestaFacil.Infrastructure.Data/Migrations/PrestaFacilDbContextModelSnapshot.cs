@@ -15,8 +15,8 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.Client", b =>
@@ -62,7 +62,23 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Migrations
                     b.ToTable("LoanApplications");
                 });
 
-            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationMain", b =>
+            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationChild", b =>
+                {
+                    b.Property<int>("LoanApplicationParentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Item")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Producto")
+                        .HasColumnType("varchar(500)");
+
+                    b.HasKey("LoanApplicationParentId", "Item");
+
+                    b.ToTable("LoanApplicationChilds");
+                });
+
+            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationParent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,41 +95,39 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("LoanApplicationMains");
+                    b.ToTable("LoanApplicationParents");
                 });
 
-            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationMainDetail", b =>
+            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationChild", b =>
                 {
-                    b.Property<int>("LoanApplicationMainId")
-                        .HasColumnType("int");
+                    b.HasOne("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationParent", "LoanApplicationParent")
+                        .WithMany("LoanApplicationChilds")
+                        .HasForeignKey("LoanApplicationParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("Item")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Producto")
-                        .HasColumnType("varchar(500)");
-
-                    b.HasKey("LoanApplicationMainId", "Item");
-
-                    b.ToTable("LoanApplicationMainDetails");
+                    b.Navigation("LoanApplicationParent");
                 });
 
-            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationMain", b =>
+            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationParent", b =>
                 {
                     b.HasOne("FinancieraAcme.PrestaFacil.Domain.Entities.Client", "Client")
                         .WithMany("LoanApplicationMains")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationMainDetail", b =>
+            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.Client", b =>
                 {
-                    b.HasOne("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationMain", "LoanApplicationMain")
-                        .WithMany("LoanApplicationMainDetails")
-                        .HasForeignKey("LoanApplicationMainId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("LoanApplicationMains");
+                });
+
+            modelBuilder.Entity("FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationParent", b =>
+                {
+                    b.Navigation("LoanApplicationChilds");
                 });
 #pragma warning restore 612, 618
         }

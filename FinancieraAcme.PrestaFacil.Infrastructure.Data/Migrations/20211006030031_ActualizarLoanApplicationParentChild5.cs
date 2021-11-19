@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Migrations
 {
-    public partial class AddLoanApplicationMainDetails : Migration
+    public partial class ActualizarLoanApplicationParentChild5 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,11 +11,11 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Migrations
                 name: "Clients",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombres = table.Column<string>(nullable: true),
-                    Apellidos = table.Column<string>(nullable: true),
-                    DocumentoIdentidad = table.Column<string>(nullable: true)
+                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocumentoIdentidad = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -23,19 +23,19 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LoanApplicationMains",
+                name: "LoanApplicationParents",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaSolicitud = table.Column<DateTime>(nullable: false),
-                    ClientId = table.Column<int>(nullable: false)
+                    FechaSolicitud = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LoanApplicationMains", x => x.Id);
+                    table.PrimaryKey("PK_LoanApplicationParents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LoanApplicationMains_Clients_ClientId",
+                        name: "FK_LoanApplicationParents_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
@@ -43,37 +43,37 @@ namespace FinancieraAcme.PrestaFacil.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LoanApplicationMainDetails",
+                name: "LoanApplicationChilds",
                 columns: table => new
                 {
-                    LoanApplicationMainId = table.Column<int>(nullable: false),
-                    Item = table.Column<int>(nullable: false),
+                    LoanApplicationParentId = table.Column<int>(type: "int", nullable: false),
+                    Item = table.Column<int>(type: "int", nullable: false),
                     Producto = table.Column<string>(type: "varchar(500)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LoanApplicationMainDetails", x => new { x.LoanApplicationMainId, x.Item });
+                    table.PrimaryKey("PK_LoanApplicationChilds", x => new { x.LoanApplicationParentId, x.Item });
                     table.ForeignKey(
-                        name: "FK_LoanApplicationMainDetails_LoanApplicationMains_LoanApplicationMainId",
-                        column: x => x.LoanApplicationMainId,
-                        principalTable: "LoanApplicationMains",
+                        name: "FK_LoanApplicationChilds_LoanApplicationParents_LoanApplicationParentId",
+                        column: x => x.LoanApplicationParentId,
+                        principalTable: "LoanApplicationParents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LoanApplicationMains_ClientId",
-                table: "LoanApplicationMains",
+                name: "IX_LoanApplicationParents_ClientId",
+                table: "LoanApplicationParents",
                 column: "ClientId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LoanApplicationMainDetails");
+                name: "LoanApplicationChilds");
 
             migrationBuilder.DropTable(
-                name: "LoanApplicationMains");
+                name: "LoanApplicationParents");
 
             migrationBuilder.DropTable(
                 name: "Clients");

@@ -1,0 +1,107 @@
+﻿@model FinancieraAcme.PrestaFacil.Domain.Entities.LoanApplicationChild
+@using FinancieraAcme.PrestaFacil.Domain.Entities
+
+@{
+    ViewData["Title"] = "EnterApplicationDetail";
+    List<LoanApplicationChild> Detalles = ViewBag.Detalles;
+}
+
+<h1>Enter Application</h1>
+
+<div>
+    <h4>LoanApplication</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Client:
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Client.Apellidos
+        </dd>
+        <dt class="col-sm-2">
+            Application Date
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Date
+        </dd>
+    </dl>
+</div>
+
+<h4>Enter Loan Application Main Detail</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EnterApplicationDetail">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="LoanApplicationParentId" class="control-label"></label>
+                <input asp-for="LoanApplicationParentId" class="form-control" />
+                <span asp-validation-for="LoanApplicationParentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item" class="control-label"></label>
+                <input asp-for="Item" class="form-control" />
+                <span asp-validation-for="Item" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Producto" class="control-label"></label>
+                <input asp-for="Producto" class="form-control" />
+                <span asp-validation-for="Producto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<h4>List  Details</h4>
+@if (Detalles.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Item
+                </th>
+                <th>
+                    Producto
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var detalle in Detalles)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => detalle.Item)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => detalle.Producto)
+                </td>
+
+                @*<td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>|
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>|
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>*@
+            </tr>
+            }
+
+        </tbody>
+    </table>
+}
+else
+{
+    <span> Please enter details</span>
+}
+<form asp-action="SaveApplicationDetails">
+    <input type="submit" value="Save" class="btn btn-danger" />
+    <a asp-action="Registrar">Regresar</a>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

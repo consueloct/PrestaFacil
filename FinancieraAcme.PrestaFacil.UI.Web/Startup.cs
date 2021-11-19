@@ -1,8 +1,9 @@
+using FinancieraAcme.PrestaFacil.Domain;
 using FinancieraAcme.PrestaFacil.Domain.Interfaces;
 using FinancieraAcme.PrestaFacil.Infrastructure.Data.Model;
 using FinancieraAcme.PrestaFacil.Infrastructure.Data.Repository;
 using FinancieraAcme.PrestaFacil.UI.Web.Data;
-using Microsoft.AspNetCore.Builder;
+using FinancieraAcme.PrestaFacil.Infrastructure.Data.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Logging;
 
 namespace FinancieraAcme.PrestaFacil.UI.Web
 {
@@ -31,10 +34,18 @@ namespace FinancieraAcme.PrestaFacil.UI.Web
         public void ConfigureServices(IServiceCollection services)
         {
             //Data sources
-            services.AddDbContext<PrestaFacilDbContext>(options =>
-            options.UseSqlServer(
-            Configuration.GetConnectionString("PrestaFacilDbContextConnection"),
-                    x => x.MigrationsAssembly("FinancieraAcme.PrestaFacil.Infrastructure.Data")));
+            //services.AddDbContext<PrestaFacilDbContext>(options =>
+            //options.UseSqlServer(
+            //Configuration.GetConnectionString("PrestaFacilDbContextConnection"),
+            //        x => x.MigrationsAssembly("FinancieraAcme.PrestaFacil.Infrastructure.Data")
+            //       ));
+            services.AddDbContext<PrestaFacilDbContext>(
+                cfg =>
+                {
+                    cfg.UseSqlServer(Configuration.GetConnectionString("PrestaFacilDbContextConnection"))
+                    .LogTo(Console.WriteLine, LogLevel.Information);
+                }
+                );
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -42,9 +53,25 @@ namespace FinancieraAcme.PrestaFacil.UI.Web
 
 
             //Repositories
-
+            services.AddScoped<IClient, ClientRepository>();
             services.AddScoped<ILoanApplication, LoanApplicationRepository>();
-            //...
+            services.AddScoped<ILoanApplicationParentRepository, LoanApplicationParentRepository>();
+            services.AddScoped<ILoanApplicationChildRepository, LoanApplicationChildRepository>();
+            //reporitories...
+
+            //Unit of Work
+            services.AddScoped<IUnitOfWork, UnitOfWork>();//dependency injection
+
+            //Enable session Management
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = System.TimeSpan.FromMinutes(20);
+                options.Cookie.IsEssential = true;
+                options.Cookie.HttpOnly = true;
+
+            });
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -58,7 +85,7 @@ namespace FinancieraAcme.PrestaFacil.UI.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
@@ -73,6 +100,8 @@ namespace FinancieraAcme.PrestaFacil.UI.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

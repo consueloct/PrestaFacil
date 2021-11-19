@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FinancieraAcme.PrestaFacil.Domain.Entities
 {
-    public class LoanApplicationMain
+    public class LoanApplicationParent
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -14,7 +14,7 @@ namespace FinancieraAcme.PrestaFacil.Domain.Entities
         //navigation
         public Client Client { get; set; }
 
-        public List<LoanApplicationMainDetail> LoanApplicationMainDetails { get; set; }
+        public List<LoanApplicationChild> LoanApplicationChilds { get; set; }
 
 
     }

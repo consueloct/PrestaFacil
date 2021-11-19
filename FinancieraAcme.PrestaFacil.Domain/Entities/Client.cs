@@ -14,7 +14,7 @@ namespace FinancieraAcme.PrestaFacil.Domain.Entities
 
         public string DocumentoIdentidad { get; set; }
 
-        public List<LoanApplicationMain> LoanApplicationMains { get; set; }
+        public List<LoanApplicationParent> LoanApplicationMains { get; set; }
         
     }
 }
